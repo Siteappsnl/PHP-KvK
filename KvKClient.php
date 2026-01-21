@@ -16,6 +16,8 @@ use GuzzleHttp\Middleware;
 use GuzzleHttp\HandlerStack;
 use Psr\Http\Message\RequestInterface;
 
+define('KVK_TESTING_API_KEY', 'l7xx1f2691f2520d487b902f4e0b57a0b197');
+
 /**
  * @method mixed getBasisprofielByKvkNummer(string $kvkNummer, bool $geoData)
  * @method mixed getEigenaar(string $kvkNummer, bool $geoData)
@@ -31,12 +33,12 @@ use Psr\Http\Message\RequestInterface;
 class KvKClient
 {
     private const PRODUCTION_URL = 'https://api.kvk.nl/api';
-    private const DEVELOPMENT_URL = 'https://api.kvk.nl/test/api';
+    private const TESTING_URL = 'https://api.kvk.nl/test/api';
 
     private $client;
     private $config;
 
-    public function __construct(string $userKey, string $stage = 'test', ?string $rootCertificate = null)
+    public function __construct(string $userKey, ?string $rootCertificate = null)
     {
 
         if ($rootCertificate === null) {
@@ -57,7 +59,7 @@ class KvKClient
         ]);
 
         $this->config = new Configuration();
-        $this->config->setHost($stage === 'test' ? self::DEVELOPMENT_URL : self::PRODUCTION_URL);
+        $this->config->setHost($userKey === KVK_TESTING_API_KEY ? self::TESTING_URL : self::PRODUCTION_URL);
     }
 
     public function getBasisprofielByKvkNummer(?string $kvkNummer = null, ?bool $geoData = null) {
